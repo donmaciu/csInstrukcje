@@ -77,3 +77,41 @@ using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
    BlogSite bsObj2 = (BlogSite)deserializer.ReadObject(ms);  
 }  
 ```
+
+## Pobieranie tekstu (JSONa) z adresu URL z poziomu kodu c#
+Najprostszym sposobem uzyskania ciągu znaków JSON za pomocą metody GET z adresu internetowego jest skorzystanie z klasy WebClient
+
+```c#
+// Utworzenie obiektu WebClient
+using (WebClient wc = new WebClient())
+{
+  // DownloadString pobiera zawartość dostępną pod linkiem i zapisuje ją w zmiennej json
+   string json = wc.DownloadString("https://jakis.adres.pl");
+}
+```
+
+Jeśli należy użyć dodatkowych nagłówków przy pobieraniu danych można je zdefiniować w poniższy sposób
+
+```c#
+// wc jest obiektem klasy WebClient
+wc.Headers.Add("Bearer", "jakisToken");
+```
+
+Jeśli chcemy wykonać zapytanie zapomocą metody POST
+
+```c#
+using (WebClient wc = new WebClient())
+{
+    // Ustawienie nagłówków zawierających opis przesyłanej treści
+    wc.Headers.Add("Content-Type","application/x-www-form-urlencoded");
+    
+    // uzyskanie tablicy bajtowej na podstawie ciągu znaków w zmiennej postData
+    byte[] byteArray = Encoding.Unicode.GetBytes(postData);
+    // funkcja Upload data przyjmuje jako argumenty adres URL, nazwę metody (tutaj POST), oraz uzyskaną powyżej tablicę
+    // uzyskujemy w ten sposób zawartość zwracanej witryny/pliku w formie tablicy bajtów
+    byte[] byteResult= wc.UploadData("https://jakis.adres.pl","POST",byteArray);
+    // zamiana tablicy bajtów na zmienną typu string
+    string zeStrony = Encoding.Unicode.GetString(byteResult);
+}
+```
+
