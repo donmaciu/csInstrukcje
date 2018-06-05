@@ -26,7 +26,7 @@ class BlogSite
 ```
 
 ### Serializacja
-Proces zamiany obiektu na obiekty typu JSON
+Proces zamiany obiektu c# na ciąg typu JSON
 
 ```c#
 // Tworzenie obiektu do serializacji
@@ -58,3 +58,22 @@ sr.Close();
 msObj.Close();  
 ```
 
+### Deserializacja
+Proces zamiany ciągu znaków w formacie json na obiekt c#
+
+```c#
+// zdefiniowanie zmiennej przechowującej ciąg JSON
+string json = "{\"Description\":\"Share Knowledge\",\"Name\":\"C-sharpcorner\"}";  
+
+// Blok using, w którym został zdefiniowany nowy strumień.
+// Strumień jest tworzony na podstawie bajtów uzyskanych za pomocą funkcji Encoding.Unicode.GetBytes
+// WAŻNE: bloki using automatycznie zamykają strumienie po zamknięciu bloku
+using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))  
+{  
+   // Utworzenie obiektu deserializującego z określeniem typu obiektu, do którego będzie wykonana deserializacja  
+   DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(BlogSite));
+   // deserializer.ReadObject czyta ciąg JSON ze strumienia i konwertuje go na obiekt c#. Należy jednak tak uzyskany obiekt
+   // rzutować na typ, który chce się uzyskać - w tym przypadku jest to BlogSite.
+   BlogSite bsObj2 = (BlogSite)deserializer.ReadObject(ms);  
+}  
+```
